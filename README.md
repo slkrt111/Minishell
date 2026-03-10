@@ -50,14 +50,14 @@ make
 ## Usage
 Once compiled, launch the executable
 ```bash
-./minishell
+./Z-Shell
 ```
 Example of supported commands:
 ```bash
-minishell> ls -l | grep ".c" > list.txt
-minishell> echo $USER is using $SHLVL
-minishell> export MY_VAR="42"
-minishell> cat << END
+Z-Shell> ls -l | grep ".c" > list.txt
+Z-Shell> echo $USER is using $SHLVL
+Z-Shell> export MY_VAR="42"
+Z-Shell> cat << END
 > hello world
 > END
 ```
@@ -82,6 +82,7 @@ execve(): Replace the current process with the program to be executed.
 
 ### 4. Signal Handling
 Using sigaction to handle keyboard interruptions and maintain the integrity of the prompt without memory leaks.
+
 
 
 
