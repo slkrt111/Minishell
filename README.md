@@ -8,11 +8,10 @@
 ---
 
 ##  Sommaire
-* [Introduction](#-introduction)
-* [Features](#-features)
-* [Installation](#-installation)
-* [Usage](#-usage)
-* [Technical Implementation](#-technical-implementation)
+* [Introduction](#-Introduction)
+* [Features](#-Features)
+* [Installation](#-Installation)
+* [Technical Implementation](#-Technical-implementation)
 
 ---
 
@@ -78,3 +77,4 @@ execve() : Exécution des programmes.
 
 ### 4. Signal Handling
 Utilisation de sigaction pour gérer les signaux sans interrompre le processus parent de manière inattendue.
+
