@@ -7,22 +7,13 @@
 
 ---
 
-## 📑 Table of Contents
-* [Introduction](#introduction)
-* [Features](#features)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Technical Implementation](#technical-implementation)
-
----
-
-## 📝 Introduction
+## Introduction
 This project consists of recreating a minimalist shell. The goal is to understand the internal workings of a terminal in depth: reading input, parsing tokens, expanding variables, and executing processes via Unix system calls.
 
 
 ---
 
-## ✨ Features
+##  Features
 
 * **Interactive Prompt**: Display of a functional prompt with history management via `readline`.
 * **Command Execution**:
@@ -42,7 +33,7 @@ This project consists of recreating a minimalist shell. The goal is to understan
 
 ---
 
-## 🛠️ Installation
+##  Installation
 
 ### 1. Clone the repository
 ```bash
@@ -71,7 +62,7 @@ minishell> cat << END
 > END
 ```
 
-## ⚙️ Technical Implementation
+##  Technical Implementation
 ### 1. Lexing & Parsing
 The command line is broken down into Tokens (words, operators, redirections). The parser ensures that quotes (' and ") are closed and correctly interpreted.
 
@@ -91,6 +82,7 @@ execve(): Replace the current process with the program to be executed.
 
 ### 4. Signal Handling
 Using sigaction to handle keyboard interruptions and maintain the integrity of the prompt without memory leaks.
+
 
 
 
