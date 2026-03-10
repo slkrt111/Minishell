@@ -2,80 +2,96 @@
 
 <p align="center">
   <strong>A simplified Bash-like command language interpreter.</strong><br>
-  <em>Un interpréteur de commandes complet développé en C, axé sur la gestion des processus et la communication inter-processus.</em>
+  <em>A complete command interpreter developed in C, focusing on process management and inter-process communication.</em>
 </p>
 
 ---
 
-## Sommaire
+## 📑 Table of Contents
 * [Introduction](#introduction)
 * [Features](#features)
 * [Installation](#installation)
+* [Usage](#usage)
 * [Technical Implementation](#technical-implementation)
 
 ---
 
-##  Introduction
-Ce projet consiste à recréer un shell minimaliste. L'objectif est de comprendre en profondeur le fonctionnement interne d'un terminal : la lecture d'une entrée, le parsing de tokens, l'expansion de variables, et l'exécution de processus via des appels système Unix.
+## 📝 Introduction
+This project consists of recreating a minimalist shell. The goal is to understand the internal workings of a terminal in depth: reading input, parsing tokens, expanding variables, and executing processes via Unix system calls.
+
 
 ---
 
-##  Features
+## ✨ Features
 
-* **Prompt Interactif** : Affichage d'un prompt fonctionnel avec gestion de l'historique via `readline`.
-* **Exécution de Commandes** :
-    * Recherche dans le `PATH` pour les commandes système (`ls`, `grep`, `cat`, etc.).
-    * Gestion des chemins relatifs (`./script.sh`) et absolus (`/bin/ls`).
-* **Built-ins (Commandes Internes)** :
-    * `echo` avec l'option `-n`.
+* **Interactive Prompt**: Display of a functional prompt with history management via `readline`.
+* **Command Execution**:
+    * Search in the **PATH** for system commands (`ls`, `grep`, `cat`, etc.).
+    * Management of relative (`./script.sh`) and absolute (`/bin/ls`) paths.
+* **Built-ins (Internal Commands)**:
+    * `echo` with the `-n` option.
     * `cd`, `pwd`, `export`, `unset`, `env`, `exit`.
-* **Redirections & Pipes** :
-    * Redirection d'entrée `<` et Here-doc `<<`.
-    * Redirection de sortie `>` (overwrite) et `>>` (append).
-    * Pipes `|` pour connecter les flux entre plusieurs commandes.
-* **Gestion des Signaux** :
-    * `Ctrl-C` : Affiche un nouveau prompt.
-    * `Ctrl-D` : Quitte proprement (EOF).
-    * `Ctrl-\` : Aucun effet (conforme à Bash).
+* **Redirections & Pipes**:
+    * Input redirection `<` and **Here-doc** `<<`.
+    * Output redirection `>` (overwrite) and `>>` (append).
+    * **Pipes** `|` to connect the output of one command to the input of the next.
+* **Signal Handling**:
+    * `Ctrl-C`: Displays a new prompt.
+    * `Ctrl-D`: Quits the shell (EOF).
+    * `Ctrl-\`: Does nothing (matching Bash behavior).
 
 ---
 
-##  Installation
+## 🛠️ Installation
 
-### 1. Cloner le dépôt
+### 1. Clone the repository
 ```bash
-git clone git@github.com:votre-user/minishell.git
+git clone [https://github.com/your-username/minishell.git](https://github.com/your-username/minishell.git)
 cd minishell
 ```
+
 ### 2. Compilation
+The project uses a standard Makefile
 ```bash
 make
 ```
-### 2. Lancement de l'éxecutable
+
+## Usage
+Once compiled, launch the executable
 ```bash
 ./minishell
 ```
----
-##  Technical Implementation
+Example of supported commands:
+```bash
+minishell> ls -l | grep ".c" > list.txt
+minishell> echo $USER is using $SHLVL
+minishell> export MY_VAR="42"
+minishell> cat << END
+> hello world
+> END
+```
 
+## ⚙️ Technical Implementation
 ### 1. Lexing & Parsing
-La ligne de commande est découpée en Tokens (mots, opérateurs, redirections). Le parser s'assure que les quotes (' et ") sont fermées et correctement interprétées.
+The command line is broken down into Tokens (words, operators, redirections). The parser ensures that quotes (' and ") are closed and correctly interpreted.
 
 ### 2. Expansion
-Avant l'exécution, le shell remplace les variables d'environnement (ex: $USER) par leur valeur réelle et traite le code de retour $?.
+Before execution, the shell replaces environment variables (e.g., $USER) with their actual values and handles the exit status code $?.
 
 ### 3. Execution Engine
-Utilisation intensive des appels système Unix :
+Heavy use of Unix system calls:
 
-fork() : Création de processus fils.
+fork(): Create child processes for each command.
 
-pipe() : Création de tunnels de communication.
+pipe(): Create communication channels between processes.
 
-dup2() : Redirection des descripteurs (STDIN, STDOUT).
+dup2(): Redirect file descriptors (STDIN, STDOUT).
 
-execve() : Exécution des programmes.
+execve(): Replace the current process with the program to be executed.
 
 ### 4. Signal Handling
-Utilisation de sigaction pour gérer les signaux sans interrompre le processus parent de manière inattendue.
+Using sigaction to handle keyboard interruptions and maintain the integrity of the prompt without memory leaks.
+
+
 
 
