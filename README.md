@@ -1,81 +1,103 @@
-Minishell est une réplique simplifiée du shell Bash développée dans le cadre du cursus de l'École 42. Ce projet consiste à recréer un interpréteur de commandes en C, en gérant les processus, les signaux et les redirections.
+ Minishell
+A simplified Bash-like command language interpreter.
 
-Fonctionnalités implémentées:
+Un interpréteur de commandes complet développé en C, axé sur la gestion des processus et la communication inter-processus.
 
-Gestion des commandes
-Affichage d'un prompt en attente d'une nouvelle commande.
+ Sommaire
+Introduction
 
-Historique des commandes (utilisant la bibliothèque readline).
+Features
 
-Exécution de commandes simples avec recherche dans le PATH (ex: ls, grep, cat).
+Installation
 
-Chemins relatifs et absolus (ex: ./minishell ou /bin/ls).
+Usage
 
-Redirections et Pipes
-Pipes (|) : Le flux de sortie de chaque commande est connecté à l'entrée de la suivante.
+Technical Implementation
 
-Redirections d'entrée (<) : Lit depuis un fichier.
+ Introduction
+Ce projet consiste à recréer un shell minimaliste. L'objectif est de comprendre en profondeur le fonctionnement interne d'un terminal : la lecture d'une entrée, le parsing de tokens, l'expansion de variables, et l'exécution de processus via des appels système Unix.
 
-Redirections de sortie (>) : Écrit dans un fichier (écrase).
+[!NOTE]
+Ce projet respecte strictement la partie obligatoire du sujet 42 (pas de bonus inclus).
 
-Redirections de sortie en ajout (>>) : Écrit dans un fichier (append).
+ Features
+Prompt Interactif : Affichage d'un prompt fonctionnel avec gestion de l'historique via readline.
 
-Here-doc (<<) : Lit l'entrée jusqu'à une ligne contenant le délimiteur spécifié (ne met pas à jour l'historique).
+Exécution de Commandes :
 
-Built-ins
-Les commandes internes suivantes ont été recréées :
+Recherche dans le PATH pour les commandes système (ls, grep, cat, etc.).
 
-echo (avec l'option -n).
+Gestion des chemins relatifs (./script.sh) et absolus (/bin/ls).
 
-cd (uniquement avec un chemin relatif ou absolu).
+Built-ins (Commandes Internes) :
 
-pwd (sans options).
+echo avec option -n.
 
-export (sans options).
+cd, pwd, export, unset, env, exit.
 
-unset (sans options).
+Redirections & Pipes :
 
-env (sans options ni arguments).
+Redirection d'entrée < et Here-doc <<.
 
-exit (sans options).
+Redirection de sortie > (overwrite) et >> (append).
 
-Environnement et Signaux
-Variables d'environnement : Expansion des variables $VAR et du code de retour $?.
+Pipes | pour connecter les flux entre plusieurs commandes.
 
-Quotes : Gestion des simples quotes ' (empêche l'expansion) et doubles quotes " (autorise l'expansion).
+Gestion des Signaux :
 
-Signaux :
+Ctrl-C : Nouveau prompt.
 
-Ctrl-C : Affiche un nouveau prompt sur une ligne vide.
+Ctrl-D : Quitter proprement.
 
-Ctrl-D : Quitte le shell.
+Ctrl-\ : Aucun effet (conforme à Bash).
 
-Ctrl-\ : Ne fait rien (comme dans Bash).
-
-Installation et Utilisation
-Prérequis
-Le projet nécessite la bibliothèque readline. Sur Linux/Ubuntu :
-
+🛠️ Installation
+1. Cloner le dépôt
 Bash
 
-sudo apt-get install libreadline-dev
-Compilation
-Clone le dépôt et utilise le Makefile :
-
-Bash
-
-git clone https://github.com/slkrt111/minishell.git
+git clone git@github.com:votre-user/minishell.git
 cd minishell
+2. Compilation
+Le projet utilise un Makefile standard pour compiler les sources :
+
+Bash
+
 make
-Lancement
+ Usage
+Une fois compilé, lance l'exécutable :
+
 Bash
 
 ./minishell
-Architecture du projet
-Parser : Analyse la ligne de commande, gère les quotes et divise les arguments en "tokens".
+Exemple de commandes supportées :
 
-Expander : Remplace les variables d'environnement ($HOME, $?, etc.) par leur valeur réelle.
+Bash
 
-Executor : Gère la création des processus (fork), l'ouverture des fichiers (open), les pipes (pipe et dup2) et l'exécution des commandes (execve).
+minishell> ls -l | grep "minishell" > output.txt
+minishell> echo $USER is using $SHLVL
+minishell> export MY_VAR="42"
+minishell> cat << END
+> hello world
+> END
+⚙️ Technical Implementation
+Le projet est divisé en quatre grandes étapes logiques :
 
-Built-ins : Fonctions internes exécutées directement par le processus parent (sauf dans certains cas de pipes).
+1. Lexing & Parsing
+La ligne de commande est découpée en Tokens (mots, opérateurs, redirections). Le parser s'assure que les quotes (' et ") sont fermées et correctement interprétées.
+
+2. Expansion
+Avant l'exécution, le shell parcourt les tokens pour remplacer les variables d'environnement (ex: $USER) par leur valeur réelle et traite le code de retour $? de la dernière commande.
+
+3. Execution Engine
+C'est le cœur du projet utilisant les appels système :
+
+fork() : Création de processus fils pour chaque commande.
+
+pipe() : Création de tunnels de communication entre les processus.
+
+dup2() : Redirection des descripteurs de fichiers (STDIN, STDOUT).
+
+execve() : Remplacement du processus actuel par le programme à exécuter.
+
+4. Signal Handling
+Utilisation de sigaction pour intercepter les interruptions clavier et maintenir l'intégrité du prompt sans fuite de mémoire.
